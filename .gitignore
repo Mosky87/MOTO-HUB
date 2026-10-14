@@ -38,3 +38,7 @@ node_modules/
 dist/
 .aistudio/
 bun.lock
+
+.idea/
+apps/android/.idea/
+*.iml
