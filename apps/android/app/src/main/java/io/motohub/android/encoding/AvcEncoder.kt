@@ -7,6 +7,7 @@ import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaCodecList
 import android.media.MediaFormat
+import android.os.Build
 import android.os.Bundle
 import android.view.Surface
 import io.motohub.android.session.ProjectionEventLog
@@ -290,9 +291,13 @@ class AvcEncoder(
             // prepends them itself, so losing KEY_PREPEND_HEADER_TO_SYNC_FRAMES costs nothing
             // on the wire; losing the repeat-frame floor only shows on a stalled source.
             if (attempt.bare) return@apply
-            // Request zero latency encoding (disable B-frame buffering/reordering) on supported APIs (Android 8.0+)
+            // Request zero latency encoding (disable B-frame buffering/reordering) on supported APIs
+            // Note: KEY_LATENCY is an @hide framework constant in android.jar, passed directly as "latency".
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                setInteger(MediaFormat.KEY_LATENCY, 0)
+                setInteger("latency", 0)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                setInteger(MediaFormat.KEY_MAX_B_FRAMES, 0)
             }
             if (useCbr) {
                 setInteger(
