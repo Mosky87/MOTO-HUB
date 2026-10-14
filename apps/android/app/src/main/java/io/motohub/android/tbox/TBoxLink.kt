@@ -64,7 +64,12 @@ sealed interface TBoxLink {
         override val peerHint: Inet4Address? = null
         override val label: String get() = "network=$network"
 
-        override fun createSocket(): Socket = network.socketFactory.createSocket()
+        override fun createSocket(): Socket = network.socketFactory.createSocket().apply {
+            runCatching {
+                tcpNoDelay = true
+                sendBufferSize = 64 * 1024
+            }
+        }
 
         override fun disconnect() = Unit
 
@@ -123,7 +128,13 @@ sealed interface TBoxLink {
         override val label: String
             get() = "phone-hosted ${subnet.interfaceName} ${subnet.localAddress.hostAddress}/${subnet.prefixLength}"
 
-        override fun createSocket(): Socket = Socket().apply { bind(InetSocketAddress(subnet.localAddress, 0)) }
+        override fun createSocket(): Socket = Socket().apply {
+            runCatching {
+                tcpNoDelay = true
+                sendBufferSize = 64 * 1024
+            }
+            bind(InetSocketAddress(subnet.localAddress, 0))
+        }
 
         override fun disconnect() = release()
 
@@ -243,7 +254,12 @@ sealed interface TBoxLink {
             // refused too, the unbound socket below is the documented fallback.
             val source = currentP2pSourceIp() ?: bindIp.takeIf { formedElsewhere }
             if (source != null) {
-                val pinned = Socket()
+                val pinned = Socket().apply {
+                    runCatching {
+                        tcpNoDelay = true
+                        sendBufferSize = 64 * 1024
+                    }
+                }
                 try {
                     pinned.bind(InetSocketAddress(source, 0))
                     return pinned
@@ -260,7 +276,12 @@ sealed interface TBoxLink {
                     }
                 }
             }
-            return Socket()
+            return Socket().apply {
+                runCatching {
+                    tcpNoDelay = true
+                    sendBufferSize = 64 * 1024
+                }
+            }
         }
 
         /** One line per link, not per socket: the reverse channels alone would repeat it. */

@@ -290,6 +290,10 @@ class AvcEncoder(
             // prepends them itself, so losing KEY_PREPEND_HEADER_TO_SYNC_FRAMES costs nothing
             // on the wire; losing the repeat-frame floor only shows on a stalled source.
             if (attempt.bare) return@apply
+            // Request zero latency encoding (disable B-frame buffering/reordering) on supported APIs (Android 8.0+)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                setInteger(MediaFormat.KEY_LATENCY, 0)
+            }
             if (useCbr) {
                 setInteger(
                     MediaFormat.KEY_BITRATE_MODE,
