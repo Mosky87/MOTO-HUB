@@ -37,3 +37,4 @@ apps/android/app/src/main/res/raw/aa_identity_data
 node_modules/
 dist/
 .aistudio/
+bun.lock
