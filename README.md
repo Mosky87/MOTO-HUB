@@ -24,7 +24,7 @@ Your motorcycle already has the screen. MOTO-HUB gives it the software.<br>
 Project **Android Auto**, mirror **any app**, or run a full **GPS ride dashboard** on the TFT —
 and control it all from the **handlebar buttons** you already have.
 
-**CFMOTO · Benelli · Voge · Zontes · QJ Motor · Moto Morini · Longjia · Morbidelli · KOVE** — one app for the EasyConn / Carbit dashboards many brands ship.
+**CFMOTO · Benelli · Voge · Zontes · QJ Motor · Moto Morini · Longjia · Morbidelli · KOVE · Cyclone · Italjet · Keeway** — one app for the EasyConn / Carbit dashboards many brands ship.
 
 <br>
 
