@@ -32,3 +32,8 @@ apps/android/app/src/main/res/raw/aa_identity_data
 /documentation/TRIP_RECORDING.md
 /documentation/Untitled.canvas
 /tools/tbox-simulator/
+
+# Web / Node
+node_modules/
+dist/
+.aistudio/
