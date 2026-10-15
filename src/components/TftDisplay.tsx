@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { MotorcycleProfile } from '../data/motorcycles';
 import { SupportedLanguage, STRINGS } from '../data/translations';
+import { ConnectedMotoBanner } from './ConnectedMotoBanner';
 
 interface TftDisplayProps {
   activeBike: MotorcycleProfile;
@@ -180,6 +181,16 @@ export const TftDisplay: React.FC<TftDisplayProps> = ({
 
   return (
     <div className="space-y-4">
+      {/* Dynamic Motorcycle Connected Hero Banner */}
+      {connectionState === 'connected' && (
+        <ConnectedMotoBanner
+          activeBike={activeBike}
+          currentLang={currentLang}
+          onDisconnect={() => onTriggerAction?.('reconnect')}
+          onSelectMode={(mode) => setDisplayMode(mode)}
+        />
+      )}
+
       {/* TFT Control & Quick Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-zinc-900/80 rounded-xl border border-zinc-800">
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">

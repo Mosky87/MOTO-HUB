@@ -12,7 +12,7 @@ import { MOTORCYCLE_CATALOG, MotorcycleProfile } from './data/motorcycles';
 import { SupportedLanguage } from './data/translations';
 
 export const App: React.FC = () => {
-  const [currentLang, setCurrentLang] = useState<SupportedLanguage>('en');
+  const [currentLang, setCurrentLang] = useState<SupportedLanguage>('it');
   const [activeTab, setActiveTab] = useState<'tft' | 'controls' | 'telemetry' | 'garage' | 'pairing' | 'diagnostics' | 'settings'>('tft');
   const [activeBike, setActiveBike] = useState<MotorcycleProfile>(MOTORCYCLE_CATALOG[0]);
   const [connectionState, setConnectionState] = useState<'connected' | 'connecting' | 'disconnected'>('connected');

@@ -303,8 +303,7 @@ private fun HomeTabContent(
         session.motorcycle?.let { motorcycle ->
             MotorcycleHero(
                 motorcycle = motorcycle,
-                compact = destination == HubDestination.CONNECTING ||
-                    destination == HubDestination.ACTIVE_SESSION
+                compact = destination == HubDestination.CONNECTING
             )
         }
 
@@ -416,28 +415,18 @@ private fun MotorcycleHero(motorcycle: MotorcycleProfile, compact: Boolean) {
         }
     } else {
         val monogram = displayName.trim().take(1).uppercase().ifBlank { "M" }
-        val hasPhoto = !motorcycle.photoPath.isNullOrBlank()
+        val hasPhoto = true
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(216.dp)
                 .clip(RoundedCornerShape(22.dp))
         ) {
-            if (hasPhoto) {
-                MotorcyclePhoto(
-                    path = motorcycle.photoPath,
-                    modifier = Modifier.fillMaxSize(),
-                    // MotorcyclePhoto types this as RoundedCornerShape, so it cannot read the
-                    // theme's Shapes directly; kept in step with shapes.large by hand.
-                    shape = RoundedCornerShape(22.dp)
-                )
-            } else {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface)
-                )
-            }
+            MotorcyclePhoto(
+                path = motorcycle.photoPath,
+                modifier = Modifier.fillMaxSize(),
+                shape = RoundedCornerShape(22.dp)
+            )
             // Ghost monogram stamped over the art (not behind it - a user photo has no
             // transparency to peek through, unlike a studio product render), corner-anchored
             // so it reads as a stylistic accent instead of competing with the photo.

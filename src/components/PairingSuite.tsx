@@ -209,6 +209,28 @@ export const PairingSuite: React.FC<PairingSuiteProps> = ({
               </span>
             </div>
 
+            {/* Connected Bike Photo Showcase Banner */}
+            {connectionState === 'connected' && (
+              <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-950/40 to-zinc-900 border border-emerald-500/40 flex items-center space-x-3.5 shadow-lg">
+                <div className="relative w-20 h-14 rounded-lg overflow-hidden border border-zinc-700 bg-black shrink-0">
+                  <img
+                    src={activeBike.photoUrl || '/media/qj_srt_900_sx.png'}
+                    alt={activeBike.model}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Connessione Attiva</span>
+                  </div>
+                  <h4 className="text-sm font-black text-white truncate">{activeBike.brand} {activeBike.model}</h4>
+                  <p className="text-[11px] text-zinc-400 font-mono truncate">{activeBike.defaultSsid} · {activeBike.protocol}</p>
+                </div>
+              </div>
+            )}
+
             {/* Handshake Progress Steps */}
             <div className="space-y-2">
               {handshakeStages.map((stage, idx) => {

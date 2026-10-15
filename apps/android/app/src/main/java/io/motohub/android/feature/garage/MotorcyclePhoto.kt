@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import io.motohub.android.i18n.motoHubText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -36,11 +37,22 @@ fun MotorcyclePhoto(
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = RoundedCornerShape(18.dp)
 ) {
+    val context = LocalContext.current
     var bitmap by remember(path) { mutableStateOf<android.graphics.Bitmap?>(null) }
 
     LaunchedEffect(path) {
-        bitmap = path?.let { filePath ->
-            withContext(Dispatchers.IO) { BitmapFactory.decodeFile(filePath) }
+        bitmap = withContext(Dispatchers.IO) {
+            val fromFile = path?.let { filePath ->
+                BitmapFactory.decodeFile(filePath)
+            }
+            if (fromFile != null) {
+                fromFile
+            } else {
+                val resId = context.resources.getIdentifier("qj_srt_900_sx", "drawable", context.packageName)
+                if (resId != 0) {
+                    BitmapFactory.decodeResource(context.resources, resId)
+                } else null
+            }
         }
     }
 

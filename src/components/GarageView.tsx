@@ -220,19 +220,29 @@ export const GarageView: React.FC<GarageViewProps> = ({
               )}
 
               <div>
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-orange-400 shrink-0 font-bold">
-                    <Bike className="w-6 h-6" />
+                {/* Bike Photo Showcase */}
+                <div className="relative w-full h-32 rounded-xl overflow-hidden mb-3 border border-zinc-800 bg-black">
+                  <img
+                    src={bike.photoUrl || '/media/qj_srt_900_sx.png'}
+                    alt={bike.model}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-2.5">
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-orange-400 tracking-wider block">
+                        {bike.brand}
+                      </span>
+                      <h3 className="text-sm font-extrabold text-white leading-tight">
+                        {bike.model}
+                      </h3>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider">
-                      {bike.brand}
-                    </span>
-                    <h3 className="text-sm font-extrabold text-white leading-tight">
-                      {bike.model}
-                    </h3>
-                    <span className="text-[11px] text-zinc-400 font-mono">{bike.engine}</span>
-                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[11px] text-zinc-400 font-mono">{bike.engine}</span>
+                  <span className="text-[10px] bg-zinc-800 text-zinc-400 px-1.5 py-0.5 rounded font-mono">{bike.aspectRatio}</span>
                 </div>
 
                 {/* Specs Pill List */}
