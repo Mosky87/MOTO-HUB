@@ -101,8 +101,9 @@ object TBoxSessionRegistry {
     fun install(handle: TBoxSessionHandle) {
         activeHandle = handle
         recoveryLink.handOver()
-        consumers.clear()
-        consumersSeen.clear()
+        // Claims and history survive session replacement (recovery reuse): callers always
+        // re-claim after install, and the explicit clear()/releaseAndClear() paths already wipe
+        // consumers when a mode truly stops, so keeping them here is safe.
         // The installed session holds its own interest in the shared network connector, released
         // in [clear]. This - not a skipped disconnect in whoever created the connector - is what
         // keeps the Wi-Fi request alive when the connecting ViewModel dies under a running
@@ -179,7 +180,8 @@ object TBoxSessionRegistry {
      */
     @Synchronized
     fun releaseAndClear(consumer: String, handle: TBoxSessionHandle? = null): Boolean {
-        val wasLast = consumers.releaseIsLast(consumer)
+        // Validate BEFORE modifying consumer state: a stale handle must not burn the consumer out
+        // of the current session just because another (older) handle is being released.
         if (handle != null && activeHandle !== handle) return false
         if (activeHandle == null) {
             // No session left, and this mode is done with it: a link some recovery kept has now
@@ -187,6 +189,7 @@ object TBoxSessionRegistry {
             releaseRetainedRecoveryLink()
             return false
         }
+        val wasLast = consumers.releaseIsLast(consumer)
         if (!wasLast) {
             ProjectionEventLog.record(
                 "SESSION",

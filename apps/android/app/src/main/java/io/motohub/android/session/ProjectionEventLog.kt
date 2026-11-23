@@ -6,6 +6,7 @@ package io.motohub.android.session
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import io.motohub.android.BuildConfig
 import io.motohub.android.feature.settings.MotoHubSettings
 import java.io.File
@@ -280,6 +281,22 @@ object ProjectionEventLog {
         appContext?.let(MotoHubSettings::loggingEnabled) ?: true
 
     /**
+     * Test-only override for [isLoggingEnabled]. Returns false when set, true otherwise.
+     * Package-private so unit tests in the same module can call it without reflection.
+     */
+    @VisibleForTesting
+    fun setIsLoggingEnabledForTests(enabled: Boolean) {
+        testLoggingOverride = enabled
+    }
+
+    /** When true, [isLoggingEnabled] returns this value regardless of [appContext]. */
+    private var testLoggingOverride: Boolean? = null
+
+    /** Package-private for tests; visible to inline functions that cannot see `internal`. */
+    fun checkIsLoggingEnabled(): Boolean =
+        testLoggingOverride ?: (appContext?.let(MotoHubSettings::loggingEnabled) ?: true)
+
+    /**
      * When the newest entry in the ring was recorded, or null when the log is empty.
      *
      * Only interesting while logging is OFF, where it is the moment the log stopped being an
@@ -308,7 +325,7 @@ object ProjectionEventLog {
         // verbose extras. appContext is only null for the instant before initialize()
         // runs, which never calls record(); defaulting to enabled there is unreachable
         // in practice but keeps this fail-open rather than silently swallowing events.
-        if (!isLoggingEnabled()) return
+        if (!checkIsLoggingEnabled()) return
         val detail = redact(buildString {
             append(message)
             if (throwable != null) {
@@ -425,7 +442,7 @@ object ProjectionEventLog {
      * discard it inside [record], paying for a log nobody asked for.
      */
     inline fun debug(source: String, message: () -> String) {
-        if (!isLoggingEnabled()) return
+        if (!checkIsLoggingEnabled()) return
         debug(source, message())
     }
 
@@ -445,7 +462,7 @@ object ProjectionEventLog {
      * off too, and that has to stay true for facts as much as for events.
      */
     fun setTelemetryFacts(facts: Map<String, String>) {
-        if (!isLoggingEnabled()) return
+        if (!checkIsLoggingEnabled()) return
         SentryIntegration.setDiagnosticTags(facts)
     }
 
