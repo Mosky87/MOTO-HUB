@@ -278,18 +278,19 @@ object ProjectionEventLog {
      * to call per protocol event.
      */
     fun isLoggingEnabled(): Boolean =
-        appContext?.let(MotoHubSettings::loggingEnabled) ?: true
+        testLoggingOverride ?: (appContext?.let(MotoHubSettings::loggingEnabled) ?: true)
 
     /**
-     * Test-only override for [isLoggingEnabled]. Returns false when set, true otherwise.
+     * Test-only override for [isLoggingEnabled]. Returns the set value regardless of [appContext];
+     * pass `null` to restore the default (read from [MotoHubSettings]).
      * Package-private so unit tests in the same module can call it without reflection.
      */
     @VisibleForTesting
-    fun setIsLoggingEnabledForTests(enabled: Boolean) {
+    fun setIsLoggingEnabledForTests(enabled: Boolean?) {
         testLoggingOverride = enabled
     }
 
-    /** When true, [isLoggingEnabled] returns this value regardless of [appContext]. */
+    /** When set, [isLoggingEnabled] returns this value regardless of [appContext]. */
     private var testLoggingOverride: Boolean? = null
 
     /** Package-private for tests; visible to inline functions that cannot see `internal`. */

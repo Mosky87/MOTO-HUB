@@ -37,7 +37,7 @@ class TBoxSessionRegistryClaimTest {
 
     @After
     fun tearDown() {
-        ProjectionEventLog.setIsLoggingEnabledForTests(true)
+        ProjectionEventLog.setIsLoggingEnabledForTests(null)
     }
 
     @Test
