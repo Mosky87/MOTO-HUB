@@ -139,13 +139,18 @@ internal fun nextTBoxRejoinStep(
 }
 
 /** Requests the T-Box AP explicitly and binds the process for its reverse TCP servers. */
-class TBoxNetworkConnector(context: Context) {
-    private val appContext = context.applicationContext
+/**
+ * Production constructor requires a non-null Context. The null-default variant exists only for unit
+ * tests that need to build a [TBoxSessionHandle] without Android infrastructure — methods that
+ * actually use ConnectivityManager/WifiManager will throw when called on such instances.
+ */
+class TBoxNetworkConnector(private val context: Context? = null) {
+    private val appContext by lazy { context!!.applicationContext }
     private val reconnectScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val connectivityManager = appContext.getSystemService(
-        ConnectivityManager::class.java
-    )
-    private val wifiManager = appContext.getSystemService(WifiManager::class.java)
+    private val connectivityManager by lazy {
+        appContext.getSystemService(ConnectivityManager::class.java)
+    }
+    private val wifiManager by lazy { appContext.getSystemService(WifiManager::class.java) }
     @Volatile
     private var hiddenSsidFallbackLogged = false
     private val mutableEvents = MutableSharedFlow<TBoxNetworkEvent>(

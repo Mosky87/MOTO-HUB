@@ -361,6 +361,9 @@ object TBoxLinkResolver {
     private const val FALLBACK_PREFERENCES = "tbox_access_point_fallback"
     private const val FALLBACK_KEY_PREFIX = "streak_"
 
+    /** Prevents lost-update in [noteAccessPointFallback] when two coroutines race on the same profile. */
+    private val fallbackStreakLock = Any()
+
     /**
      * Consecutive access-point joins won by the fallback before the saved PHONE_HOTSPOT mode is
      * corrected. Two, not one: a single win can be a dash that happened to be in the middle of a
@@ -586,9 +589,19 @@ object TBoxLinkResolver {
         val preferences = context.applicationContext
             .getSharedPreferences(FALLBACK_PREFERENCES, Context.MODE_PRIVATE)
         val key = FALLBACK_KEY_PREFIX + profile.id
-        val streak = preferences.getInt(key, 0) + 1
+        var streak: Int
+        synchronized(fallbackStreakLock) {
+            streak = preferences.getInt(key, 0) + 1
+            if (streak < AP_FALLBACKS_BEFORE_REWRITE) {
+                preferences.edit().putInt(key, streak).apply()
+            } else {
+                // Threshold reached: clear the streak counter (the profile rewrite below
+                // is not inside this lock because it touches MotorcycleProfileStore which
+                // may do disk I/O and must not hold fallbackStreakLock for long).
+                preferences.edit().remove(key).apply()
+            }
+        }
         if (streak < AP_FALLBACKS_BEFORE_REWRITE) {
-            preferences.edit().putInt(key, streak).apply()
             ProjectionEventLog.record(
                 "NETWORK",
                 "${profile.ssid} answered on its access point while saved as \"My phone hosts " +
@@ -610,7 +623,6 @@ object TBoxLinkResolver {
             )
             return
         }
-        preferences.edit().remove(key).apply()
         ProjectionEventLog.record(
             "NETWORK",
             "${profile.ssid} has now been reached on its own access point " +
