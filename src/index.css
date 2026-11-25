@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --color-mh-primary: #C8F240;
+  --color-mh-on-primary: #0B0D09;
+  --color-mh-secondary: #B9C4AB;
+  --color-mh-bg: #0B0D09;
+  --color-mh-on-bg: #E8ECE2;
+  --color-mh-surface: #151913;
+  --color-mh-on-surface: #E8ECE2;
+  --color-mh-surface-variant: #1C211A;
+  --color-mh-on-surface-variant: #7E876E;
+  --color-mh-surface-container: #262C22;
+  --color-mh-outline: #2A3124;
+  --color-mh-outline-variant: #1F241B;
+  --color-mh-error: #F05545;
+  --color-mh-live: #2DD881;
+  --color-mh-mirror: #5BA8F0;
+  --color-mh-auto: #3EC8D0;
+  --color-mh-import: #FFA84B;
+  --color-mh-manual: #B388FF;
+  --color-mh-favorite: #FFD24C;
+}
+
+@keyframes rail-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes edition-drop {
+  0% {
+    transform: translateY(-28px);
+    opacity: 0;
+  }
+  65% {
+    transform: translateY(3px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes live-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.animate-rail-shimmer {
+  animation: rail-shimmer 1.4s linear infinite;
+}
+
+.animate-edition-drop {
+  animation: edition-drop 0.55s cubic-bezier(0.22, 1.4, 0.36, 1) forwards;
+}
+
+.animate-live-blink {
+  animation: live-blink 2s ease-in-out infinite;
+}
+
+/* Custom dark scrollbar matching MOTO-HUB surface palette */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0D09;
+}
+::-webkit-scrollbar-thumb {
+  background: #2A3124;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3d4734;
+}

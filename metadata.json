@@ -1,0 +1,5 @@
+{
+  "name": "MOTO-HUB",
+  "description": "Android Auto, screen mirroring, motorcycle garage, handlebar controls, and T-Box diagnostics for motorcycle TFT dashboards.",
+  "requestFramePermissions": []
+}
